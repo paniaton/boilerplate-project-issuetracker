@@ -31,15 +31,32 @@ module.exports = function (app) {
 
     .get(function (req, res){
       var project = req.params.project;
+      let { issue_title, issue_text, created_by, assigned_to, status_text, open} = req.query
       Project.findOne({projectname: project}, (err,projectDoc) =>{ 
         if(err) 
           res.send("error en la db")
-        Issue.find({projectId:projectDoc._id},(err,issuesDocs) => {
-          if(err)
-            res.send("error al leer la db")
-          res.json(issuesDocs)
-          
-        })
+        else if(projectDoc==null){}
+        else{
+          let query = Issue.find()
+          if(issue_title)
+            query.where({issue_title:issue_title})
+          if(issue_text)
+            query.where({issue_text:issue_text})
+          if(created_by)
+            query.where({created_by:created_by})
+          if(assigned_to)
+            query.where({assigned_to:assigned_to})
+          if(status_text)
+            query.where({status_text:status_text})
+          if(open)
+            query.where({open:open})
+
+          query.exec((err,issuesDocs) => {
+            if(err)
+              res.send("error al leer la db")
+            res.json(issuesDocs)
+          })
+        }
       })
     })
     
