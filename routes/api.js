@@ -64,12 +64,20 @@ module.exports = function (app) {
     
     .put(function (req, res){
       var project = req.params.project;
-      
+      var { _id, open } = req.body;
+      Issue.findByIdAndUpdate(_id,{ open: open },(err,issueDoc) => {
+        if(err) res.send('error al leer la db')
+        res.send('successfully updated')
+      })
     })
     
     .delete(function (req, res){
       var project = req.params.project;
-      
+      var { _id } = req.body;
+      Issue.findByIdAndDelete(_id,(err,issueDoc) => {
+        if(err) res.send('error al leer la db')
+        res.send('deleted '+_id)
+      })
     });
     
 };
